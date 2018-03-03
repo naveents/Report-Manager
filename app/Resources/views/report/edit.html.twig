@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+{% block title %}Report Manager{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <h2 class="text-center">Edit Report Form</h2>
+              <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading">Edit Report</div>
+            <form name="report_form" id="report-form" method="post" action="{{ path('report_update_request') }}">
+                <div class="form-group">
+                    <label> Report Type </label>
+                    <select name="report_type_id" id="report_type_id" class="form-control" required="">                        
+                        {% for report_type in report_types %}
+                            <option {{ (report.getMasterReportType().getId() == report_type.id) ? 'selected="selected"' : '' }} value="{{ report_type.id }}"> {{ report_type.reportTypeName }} </option>
+                        {% endfor %}    
+                    </select>        
+                </div>
+                    
+                <div class="form-group">
+                    <label> Report Name </label>
+                    <input type="text" name="name" id="name" value="{{ report.reportName }}" class="form-control" required="" />
+                </div>
+                    
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-3">
+                        <label> Priority </label>
+                        <select name="priority" id="priority" class="form-control">
+                            <option {{ (report.reportPriority == 'high') ? 'selected="selected"' : '' }} value="high">High</option>
+                            <option {{ (report.reportPriority == 'low') ? 'selected="selected"' : '' }} value="low">Low</option>
+                        </select>
+                        </div>
+                    </div>
+                </div>
+                    
+                <div class="form-group">
+                    <label> Description </label>
+                    <textarea name="description" id="description" class="form-control">{{ report.reportDescription }}</textarea>
+                </div> 
+                    
+                <div class="form-group group_1" style="{{ (report.getMasterReportType().getId() == 1) ? 'display:block' : 'display:none' }}">
+                    <label> Cause </label>
+                    <textarea name="cause" id="cause" class="form-control">{{ report.reportCause }}</textarea>
+                </div> 
+                    
+                <div class="form-group group_2" style="{{ (report.getMasterReportType().getId() == 2) ? 'display:block' : 'display:none' }}">
+                    <label> Latitude </label>
+                    <input type="text" name="latitude" id="latitude" value="{{ report.geoLatitude }}" class="form-control" />
+                </div> 
+                
+               <div class="form-group group_2" style="{{ (report.getMasterReportType().getId() == 2) ? 'display:block' : 'display:none' }}">
+                    <label> Longitude </label>
+                    <input type="text" name="longitude" id="longitude" value="{{ report.geoLongitude }}" class="form-control" />
+                </div>      
+                    
+               <div class="form-group">
+                   <div class="row">
+                        <div class="col-md-6 col-md-offset-3 text-center">
+                            <input type="hidden" name="created_by" id="created_by" value="{{ emp }}" />
+                            <input type="hidden" name="report_id" id="report_id" value="{{report.id}}" />
+                            <input type="submit" name="save_report" id="save_report" value="Submit Report" class="btn btn-default" />
+                        </div>
+                   </div>
+               </div>    
+                        
+            </form>
+              </div>
+        </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function (){
+            
+          //  $(".group_1").hide();
+          //   $(".group_2").hide();
+            
+            function switchFields(field_class, display_value) {
+                if(display_value == "show") {
+                    $("."+field_class).show();
+                }
+                else{
+                    $("."+field_class).hide();
+                }
+            }
+            $("#report_type_id").on("change",function(){
+                
+                report_type_id = $(this).val();
+                if(report_type_id == 1) {
+                    switchFields("group_1","show");
+                    switchFields("group_2","hide");
+                }
+                if(report_type_id == 2) {
+                    switchFields("group_2","show");
+                    switchFields("group_1","hide");
+                }
+                if(report_type_id == "") {
+                    switchFields("group_2","hide");
+                    switchFields("group_1","hide");
+                }
+                
+            });
+            
+        });
+    </script>
+{% endblock %}
+    

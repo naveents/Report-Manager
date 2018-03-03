@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+{% block title %}Report Manager{% endblock %}
+
+{% block body %}
+    <h2 class="text-center">Reports [Employer View]</h2>
+    <hr/>
+    <div class="row" id="listview">
+        <div class="col-md-12">    
+            <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading">View All</div>
+
+            <div class="table-repsonsive">
+                <table class="table">
+                    <tr>
+                        <th>Report Type</th>
+                        <th>Report Name</th>
+                        <th>Report Priority</th>                        
+                        <th>Action</th>
+                    </tr>
+                {% for report in reports %}
+                    <tr id="row_{{ report.id }}">
+                        <td>
+                        {% if report.getMasterReportType().getId == 1 %}
+                           <div class="list-group">
+                                <a href="#" class="list-group-item active">
+                                  <h4 class="list-group-item-heading">{{ report.getMasterReportType().reportTypeName }}</h4>
+                                  <label>Cause</label>
+                                  <p class="list-group-item-text">{{ report.reportCause }}</p>
+                                </a>
+                           </div>
+                        {% endif %}  
+                        
+                        {% if report.getMasterReportType().getId == 2 %}
+                           <div class="list-group">
+                                <a href="#" class="list-group-item active">
+                                  <h4 class="list-group-item-heading">{{ report.getMasterReportType().reportTypeName }}</h4>
+                                  <ul class="list-group">
+                                    <li class="list-group-item">
+                                      <span class="badge">{{ report.geoLatitude }}</span>
+                                      Latitude
+                                    </li>
+                                    <li class="list-group-item">
+                                      <span class="badge">{{ report.geoLongitude }}</span>
+                                      Longitude
+                                    </li>
+                                  </ul>
+                                </a>
+                           </div>
+                        {% endif %} 
+                        
+                        </td>
+                        <td>{{ report.reportName}}</td>
+                        <td><label class="label label-success">{{ report.reportPriority}}</label>
+                        <p class="text-left"> Description:</p>
+                         <p class="rdesc">{{ report.reportDescription}}</p>
+                        </td>
+                        <td>
+                          {% if report.getEditStatus() == "Off" %} 
+                            <a href="{{ path('report_edit_request', {'emp_id': emp, 'report_id': report.id}) }}" id="report_edit" class="btn btn-default">Edit</a>                            
+                          {% else %}  
+                              <a name="sent">Edit Request Sent</a>
+                          {% endif %} 
+                        </td>
+                    </tr>
+                {% endfor %}
+                </table>
+            </div>
+                
+            </div>
+        </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function (){
+            
+            /* $("#listview").on("click","#report_edit",function(e){
+                e.preventDefault();
+                var report_id  = $(this).data("report_id");
+                var emp_id     = $(this).data("report_id");
+                if(report_id && emp_id) {
+                     
+                    var request_data = {report_id : report_id,emp_id: emp_id};
+
+                    $.ajax({
+                        type: "POST",
+                        url: "{{  path('report_edit_request') }}",
+                        data: request_data,
+                        success: function(data, dataType)
+                        {
+                           if(data.message !== "Error!") {
+                               alert(data.message);                               
+                           }
+                           else
+                           {
+                               alert(data.message);
+                           }
+                        },
+
+                        error: function(XMLHttpRequest, textStatus, errorThrown)
+                        {
+                            alert('Error : ' + errorThrown);
+                        }
+                   });
+                
+            }
+          
+        });*/
+            
+        });
+    </script>
+{% endblock %}
+    

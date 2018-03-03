@@ -1,0 +1,398 @@
+{% extends 'base.html.twig' %}
+{% block title %}Report Manager{% endblock %}
+
+{% block body %}
+    <h2 style="text-align: center;">Reports [Manager View]</h2>
+    <hr/>
+    <div class="row" id="listview">
+        <div class="col-md-12">
+            <h3>New Reports [For Approval]</h3>
+            <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading">View All</div>
+
+            <div class="table-repsonsive">
+                <table class="table">
+                    <tr>
+                        <th>Report Type</th>
+                        <th>Report Name</th>
+                        <th>Report Priority</th>                        
+                        <th>Action</th>
+                    </tr>
+                {% for report in report_request %}
+                    <tr id="row_{{ report.id }}">
+                        <td> {% if report.getReportType().getId == 1 %}
+                           <div class="list-group">
+                                <a href="#" class="list-group-item active">
+                                  <h4 class="list-group-item-heading">{{ report.getReportType().reportTypeName }}</h4>
+                                  <label>Cause</label>
+                                  <p class="list-group-item-text">{{ report.Cause }}</p>
+                                </a>
+                           </div>
+                        {% endif %}  
+                        
+                        {% if report.getReportType().getId == 2 %}
+                           <div class="list-group">
+                                <a href="#" class="list-group-item active">
+                                  <h4 class="list-group-item-heading">{{ report.getReportType().reportTypeName }}</h4>
+                                  <ul class="list-group">
+                                    <li class="list-group-item">
+                                      <span class="badge">{{ report.latitude }}</span>
+                                      Latitude
+                                    </li>
+                                    <li class="list-group-item">
+                                      <span class="badge">{{ report.longitude }}</span>
+                                      Longitude
+                                    </li>
+                                  </ul>
+                                </a>
+                           </div>
+                        {% endif %} 
+                        </td>
+                        <td>{{ report.name}}</td>
+                        <td><label class="label label-success">{{ report.priority}}</label>
+                            <p class="text-left"> Description:</p>
+                            <p class="rdesc">{{ report.description}}</p>
+                        </td>
+                        <td>
+                            <a href="javascript:void(0);" data-report_name="{{ report.name }}" data-report_request_id="{{ report.id }}" id="report_approve" class="btn btn-default">Approve</a>
+                           <br/> <br/>
+                            <a href="javascript:void(0);" data-report_name="{{ report.name }}" data-report_request_id="{{ report.id }}" id="report_reject" class="btn btn-danger">Reject</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </table>
+            </div>
+            </div>
+        </div>
+        </div>
+                
+        <div class="row" id="editlistview">
+        <div class="col-md-12">
+            <h3>Edited Reports [For Approval]</h3>
+            <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading">View All</div>
+
+            <div class="table-repsonsive">
+                <table class="table">
+                    <tr>
+                        <th>Report Type</th>
+                        <th>Report Name</th>
+                        <th>Report Priority</th>                       
+                        <th>Action</th>
+                    </tr>
+                {% for report in report_edit_request %}
+                    <tr id="edit_row_{{ report.id }}">
+                        <td> {% if report.getReportType().getId == 1 %}
+                           <div class="list-group">
+                                <a href="#" class="list-group-item active">
+                                  <h4 class="list-group-item-heading">{{ report.getReportType().reportTypeName }}</h4>
+                                  <label>Cause</label>
+                                  <p class="list-group-item-text">{{ report.Cause }}</p>
+                                </a>
+                           </div>
+                        {% endif %}  
+                        
+                        {% if report.getReportType().getId == 2 %}
+                           <div class="list-group">
+                                <a href="#" class="list-group-item active">
+                                  <h4 class="list-group-item-heading">{{ report.getReportType().reportTypeName }}</h4>
+                                  <ul class="list-group">
+                                    <li class="list-group-item">
+                                      <span class="badge">{{ report.latitude }}</span>
+                                      Latitude
+                                    </li>
+                                    <li class="list-group-item">
+                                      <span class="badge">{{ report.longitude }}</span>
+                                      Longitude
+                                    </li>
+                                  </ul>
+                                </a>
+                           </div>
+                        {% endif %} 
+                        </td>
+                        <td>{{ report.name}}</td>
+                        <td><label class="label label-success">{{ report.priority}}</label>
+                            <p class="text-left"> Description:</p>
+                            <p class="rdesc">{{ report.description}}</p>
+                        </td>
+                        <td>
+                            <a href="javascript:void(0);" data-report_name="{{ report.name }}" data-report_request_id="{{ report.id }}" id="report_edit_approve" class="btn btn-default">Approve</a>
+                            <br/> <br/>
+                            <a href="javascript:void(0);" data-report_name="{{ report.name }}" data-report_request_id="{{ report.id }}" id="report_edit_reject" class="btn btn-danger">Reject</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </table>
+            </div>
+            </div>
+        </div>
+        </div>        
+                
+<!-- MODAL FOR NEW REQUEST -->                
+<div class="modal fade" id="arNewModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modal_title_ar"></h4>
+      </div>
+      <div class="modal-body">
+          <div class="form-group">
+              <label>Report Justification</label>
+              <textarea name="report_justification" id="report_justification" class="form-control" required></textarea>
+              <input type="hidden" name="report_request_id" id="report_request_id" />
+              <input type="hidden" name="approve_status" id="approve_status" />
+          </div>     
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" id="ar_btn" class="btn btn-primary">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END MODAL -->
+
+<!-- MODAL FOR EDITED REQUEST -->                
+<div class="modal fade" id="arEditModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="edit_modal_title_ar"></h4>
+      </div>
+      <div class="modal-body">
+          <div class="form-group">
+              <label>Report Justification</label>
+              <textarea name="edit_report_justification" id="edit_report_justification" class="form-control" required></textarea>
+              <input type="hidden" name="edit_report_request_id" id="edit_report_request_id" />
+              <input type="hidden" name="edit_approve_status" id="edit_approve_status" />
+          </div>     
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" id="ar_edit_btn" class="btn btn-primary">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END MODAL -->   
+                
+                    
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <!-- NEW REPORT -->
+    <script type="text/javascript">
+        $(document).ready(function (){
+            $("#listview").on("click","#report_approve",function(e){
+                e.preventDefault();
+                var report_request_id  = $(this).data("report_request_id");
+                var report_name        = $(this).data("report_name");
+                if(report_request_id) {
+                     
+                     $("#report_request_id").val(report_request_id);
+                     $("#approve_status").val("approve");
+                     $("#report_justification").val("");
+                     $("#modal_title_ar").html(report_name);
+                     $("#ar_btn").html('Approve');
+                     $("#arNewModal").modal("show");
+                
+                }
+          
+            });
+            
+             $("#listview").on("click","#report_reject",function(e){
+                e.preventDefault();
+                var report_request_id  = $(this).data("report_request_id");
+                var report_name        = $(this).data("report_name");
+                if(report_request_id) {
+                     
+                     $("#report_request_id").val(report_request_id);
+                     $("#approve_status").val("reject");
+                     $("#report_justification").val("");
+                     $("#modal_title_ar").html(report_name);
+                     $("#ar_btn").html('Reject');
+                     $("#arNewModal").modal("show");
+                
+            }
+          
+            });
+            
+        
+        $("#ar_btn").on("click",function(e){
+           
+                    e.preventDefault();
+                    var report_justification = $("#report_justification").val();
+                    var report_request_id    = $("#report_request_id").val();
+                    //alert(report_request_id);
+                    var approve_status       = $("#approve_status").val();
+                    if(report_justification !== "" && report_request_id !== "" && approve_status === "approve" ){                        
+                            
+                            var request_data = {report_request_id : report_request_id,report_justification:report_justification};
+                            $.ajax({
+                                type: "POST",
+                                url: "{{ path('manager_approve_request') }}",
+                                data: request_data,
+                                success: function(data, dataType)
+                                {
+                                   if(data.message !== "Error!") {
+                                       alert(data.message); 
+                                       $("#arNewModal").modal("hide");
+                                       $("#row_"+report_request_id).hide();
+                                   }
+                                   else
+                                   {
+                                       alert(data.message);
+                                   }
+                                },
+
+                                error: function(XMLHttpRequest, textStatus, errorThrown)
+                                {
+                                    alert('Error : ' + errorThrown);
+                                }
+                           });
+                        
+                    }
+                    
+                    if(report_justification !== "" && report_request_id !== "" && approve_status === "reject" ){
+                        
+                            var request_data = {report_request_id : report_request_id,report_justification:report_justification};
+                            $.ajax({
+                                type: "POST",
+                                url: "{{ path('manager_reject_request') }}",
+                                data: request_data,
+                                success: function(data, dataType)
+                                {
+                                   if(data.message !== "Error!") {
+                                       alert(data.message); 
+                                       $("#arNewModal").modal("hide");
+                                       $("#row_"+report_request_id).hide();
+                                   }
+                                   else
+                                   {
+                                       alert(data.message);
+                                   }
+                                },
+
+                                error: function(XMLHttpRequest, textStatus, errorThrown)
+                                {
+                                    alert('Error : ' + errorThrown);
+                                }
+                           });
+                        
+                    }
+                    
+                    
+        });
+        
+        
+        $("#editlistview").on("click","#report_edit_approve",function(e){
+                e.preventDefault();
+                var report_request_id  = $(this).data("report_request_id");
+                 var report_name       = $(this).data("report_name");
+                if(report_request_id) {
+                     
+                     $("#edit_report_request_id").val(report_request_id);
+                     $("#edit_approve_status").val("approve");
+                     $("#edit_report_justification").val("");
+                     $("#edit_modal_title_ar").html(report_name);
+                     $("#ar_edit_btn").html('Approve');
+                     $("#arEditModal").modal("show");                   
+                
+            }
+          
+        });
+        
+        $("#editlistview").on("click","#report_edit_reject",function(e){
+                e.preventDefault();
+                var report_request_id  = $(this).data("report_request_id");
+                var report_name       = $(this).data("report_name");
+                if(report_request_id) {
+                     
+                     $("#edit_report_request_id").val(report_request_id);
+                     $("#edit_approve_status").val("reject");
+                     $("#edit_report_justification").val("");
+                     $("#edit_modal_title_ar").html(report_name);
+                     $("#ar_edit_btn").html('Reject');
+                     $("#arEditModal").modal("show");                   
+                
+            }
+          
+        });
+        
+        
+         $("#ar_edit_btn").on("click",function(e){
+           
+                    e.preventDefault();
+                    var edit_report_justification = $("#edit_report_justification").val();
+                    var edit_report_request_id    = $("#edit_report_request_id").val();                   
+                    var edit_approve_status       = $("#edit_approve_status").val();
+                    if(edit_report_justification !== "" && edit_report_request_id !== "" && edit_approve_status === "approve" ){
+                        
+                        var request_data = {report_request_id : edit_report_request_id,report_justification:edit_report_justification};
+                        $.ajax({
+                            type: "POST",
+                            url: "{{ path('manager_approve_edit_request') }}",
+                            data: request_data,
+                            success: function(data, dataType)
+                            {
+                               if(data.message !== "Error!") {
+                                   alert(data.message); 
+                                   $("#edit_row_"+edit_report_request_id).hide();
+                                   $("#arEditModal").modal("hide");
+                               }
+                               else
+                               {
+                                   alert(data.message);
+                               }
+                            },
+
+                            error: function(XMLHttpRequest, textStatus, errorThrown)
+                            {
+                                alert('Error : ' + errorThrown);
+                            }
+                        });
+                        
+                    }
+                    
+                    if(edit_report_justification !== "" && edit_report_request_id !== "" && edit_approve_status === "reject" ){
+                        
+                            var request_data = {report_request_id : edit_report_request_id,report_justification:edit_report_justification};
+                            $.ajax({
+                                type: "POST",
+                                url: "{{ path('manager_reject_edit_request') }}",
+                                data: request_data,
+                                success: function(data, dataType)
+                                {
+                                   if(data.message !== "Error!") {
+                                       alert(data.message); 
+                                       $("#arEditModal").modal("hide");
+                                       $("#edit_row_"+edit_report_request_id).hide();
+                                   }
+                                   else
+                                   {
+                                       alert(data.message);
+                                   }
+                                },
+
+                                error: function(XMLHttpRequest, textStatus, errorThrown)
+                                {
+                                    alert('Error : ' + errorThrown);
+                                }
+                           });
+                        
+                    }
+                    
+                    
+        });
+        
+        
+        
+        
+        });
+    </script>
+{% endblock %}
+    

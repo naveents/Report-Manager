@@ -1,0 +1,38 @@
+body{
+  font-size:12px;
+}
+
+h2{
+color: #563d7c;
+}
+.list-group-item {
+padding:2px;
+color:#000000;
+}
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover
+{
+background-color: rgb(107,103,212);
+border-color:rgb(107,103,212);
+color:#ffffff;
+}
+.list-group-item-text{
+background:#ffffff;
+color:#4a4a4a;
+}
+.list-group-item.active .list-group-item-text, .list-group-item.active:focus .list-group-item-text, .list-group-item.active:hover .list-group-item-text{
+color:#4a4a4a;
+padding:2px;
+font-size:12px;
+}
+.rdesc{
+padding:2px;
+font-size:12px;
+
+}
+.panel-default {
+padding:3px;
+}
+.navbar{
+	margin-top:5px;
+	margin-bottom:10px;
+}
